@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/x-icon">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/png">
+    <title>{{ movie.title }} - Movie Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        header {
+            background-color: #800080; /* Violet header */
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+
+            
+        }
+
+        header h1 {
+            margin: 10px 0;
+            text-align: center; /* Center the movie details text */
+            flex-grow: 1; /* Makes the title take the remaining space */
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .movie-poster, .comment-section {
+            background-color: #333333;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+        }
+
+        .movie-poster {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .movie-poster h2 {
+            color: #800080;
+            margin-top: 20px;
+        }
+
+        .movie-poster p {
+            margin: 10px 0;
+        }
+
+        .trailer {
+            flex: 2;
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        .trailer iframe {
+            width: 100%;
+            height: 450px;
+            border-radius: 10px;
+        }
+
+        .star-rating {
+            direction: rtl;
+            font-size: 30px;
+            display: inline-block;
+        }
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #FFD700;
+        }
+
+        .star-rating input[type="radio"]:checked ~ label {
+            color: #FFD700;
+        }
+
+        .comment-section {
+            flex: 1;
+            max-width: 300px;
+            margin-top: 20px;
+        }
+
+        .comment-section h3 {
+            margin-top: 0;
+        }
+
+        .comment-section form textarea {
+            width: 100%;
+            height: 150px;
+            background-color: #555555;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .comment-section button {
+            background-color: #800080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .comment-section button:hover {
+            background-color: #9b30b6;
+        }
+
+        .home-button {
+            background-color: #000000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            position: absolute; /* Position it at the top left */
+            top: 150px;  /* 20px from the top of the header */
+            left: 20px; /* 20px from the left side */
+            font-size: 16px; /* Normal button size */
+        }
+
+        .home-button:hover {
+            background-color: #9b30b6;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .movie-poster, .comment-section {
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .trailer iframe {
+                max-width: 100%;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black with opacity */
+            padding-top: 60px;
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #333;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+
+        /* Close Button */
+        .close {
+            color: white;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #ddd;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            text-align: center;
+        }
+
+        .modal-body {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://i.pinimg.com/736x/a9/16/de/a916debd06e0c209af9bc6e34cf6af28.jpg" alt="Movie Logo" style="height: 100px;">
+        <h1>{{ movie.title }} - Movie Details</h1>
+    </header>
+
+    <div class="container">
+        <!-- Movie poster section (left) -->
+        <div class="movie-poster">
+            <img src="{{ movie.poster }}" alt="Poster for {{ movie.title }}">
+            <h2>{{ movie.title }}</h2>
+            <p>Release Date: {{ movie.release_date }}</p>
+            <p>Overview: {{ movie.description }}</p>
+
+            <!-- Button to Add/Remove from Favorites -->
+            <form method="POST" action="{{ url_for('toggle_favorite', movie_id=movie.id) }}">
+                <button type="submit">
+                    {% if movie.id in favorite_movie_ids %}
+                        Remove from Favorites
+                    {% else %}
+                        Add to Favorites
+                    {% endif %}
+                </button>
+            </form>
+
+
+            <!-- Star Rating -->
+            <form id="ratingForm" method="POST" action="{{ url_for('submit_rating', movie_id=movie.id) }}">
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="rating" value="5" {% if user_rating == 5 %}checked{% endif %}>
+                    <label for="star5">&#9733;</label>
+
+                    <input type="radio" id="star4" name="rating" value="4" {% if user_rating == 4 %}checked{% endif %}>
+                    <label for="star4">&#9733;</label>
+
+                    <input type="radio" id="star3" name="rating" value="3" {% if user_rating == 3 %}checked{% endif %}>
+                    <label for="star3">&#9733;</label>
+
+                    <input type="radio" id="star2" name="rating" value="2" {% if user_rating == 2 %}checked{% endif %}>
+                    <label for="star2">&#9733;</label>
+
+                    <input type="radio" id="star1" name="rating" value="1" {% if user_rating == 1 %}checked{% endif %}>
+                    <label for="star1">&#9733;</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Rating</button>
+            </form>
+        </div>
+
+        <!-- Trailer Section -->
+        <div class="trailer">
+            <h3>Watch the Trailer</h3>
+            <iframe src="{{ movie.trailer_embed }}" title="YouTube video player" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <!-- Comment Section -->
+        <div class="comment-section">
+            <h3>Leave a Comment</h3>
+            <form id="commentForm" action="{{ url_for('submit_comment', movie_id=movie.id) }}" method="POST">
+                <textarea name="comment" placeholder="Write your comment here..." required>{{ comment_text if comment_text else '' }}</textarea>
+                <button type="submit">Submit Comment</button>
+            </form>
+        
+            <h4>Comments</h4>
+            <ul>
+                {% for comment in comments %}
+                    <li>
+                        <strong>{{ comment.username }}</strong> <span>{{ comment.created_at }}</span>
+                        <p>{{ comment.comment }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    <a href="{{ url_for('home') }}" class="home-button">Back to Home</a>
+
+    <!-- Modal for Confirmation Message -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+            <h2>Thank You!</h2>
+        </div>
+        <div class="modal-body">
+            <p id="confirmationMessage"></p>
+        </div>
+    </div>
+</div>
+
+<!-- Back to Home Button -->
+<a href="{{ url_for('home') }}" class="home-button">Back to Home</a>
+
+<script>
+    // Get modal and close button
+    var modal = document.getElementById("confirmationModal");
+    var closeButton = document.getElementsByClassName("close")[0];
+    var confirmationMessage = document.getElementById("confirmationMessage");
+
+    // Show modal after rating form submission
+    document.getElementById("ratingForm").onsubmit = function(event) {
+        event.preventDefault();  // Prevent the default form submission
+
+        // Create FormData from the rating form
+        var formData = new FormData(event.target);
+
+        // Check if the rating value is being passed correctly
+        console.log("Form Data for Rating: ", Array.from(formData.entries()));
+
+        // AJAX request to submit the form data
+        fetch("{{ url_for('submit_rating', movie_id=movie.id) }}", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())  // Assuming server returns JSON response
+        .then(data => {
+            console.log("Response Data: ", data);  // Debugging the response
+
+            // Show the appropriate message in the modal
+            if (data.success) {
+                confirmationMessage.textContent = data.message;  // Success message
+            } else {
+                confirmationMessage.textContent = data.message;  // Error message
+            }
+
+            // Display the modal
+            modal.style.display = "block";
+        })
+        .catch(error => {
+            console.error("Error:", error);  // Log any error that occurs
+            confirmationMessage.textContent = "Your ratings has been submitted.";
+            modal.style.display = "block";
+        });
+    }
+
+    
+    // Show modal after comment form submission
+    document.getElementById("commentForm").onsubmit = function(event) {
+        event.preventDefault();  // Prevent the default form submission
+        var formData = new FormData(event.target);
+
+        // AJAX request to submit the form data
+        fetch("{{ url_for('submit_comment', movie_id=movie.id) }}", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())  // Assuming server returns JSON response
+        .then(data => {
+            if (data.success) {
+                confirmationMessage.textContent = data.message;  // Success message
+                modal.style.display = "block";
+            } else {
+                confirmationMessage.textContent = data.message;  // Error message
+                modal.style.display = "block";
+            }
+        })
+        .catch(error => {
+            confirmationMessage.textContent = "An error occurred. Please try again.";
+            modal.style.display = "block";
+        });
+    }
+
+    // Close modal when user clicks the "X"
+    closeButton.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Close modal when user clicks anywhere outside the modal
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+
+</body>
+</html>

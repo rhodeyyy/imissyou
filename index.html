@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ search_term if search_term else 'Movie Rating and Review' }}</title>
+    <meta name="description" content="Rate and review your favorite movies. Search by genre or movie title and find trending movies.">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/x-icon">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Logout Button Styling */
+        .logout-button {
+            background-color: #800080; /* Violet button */
+            border-color: transparent;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 20px; /* Add space between the buttons if needed */
+        }
+
+        .logout-button:hover {
+            background-color: #9b30b6; /* Slightly lighter violet on hover */
+        }
+
+        .logout-button:focus {
+            outline: 2px solid #9b30b6;
+            outline-offset: 2px;
+        }
+
+        /* General Layout and Background */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c; /* Dark background */
+            color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Header Section */
+        header {
+            background-color: #800080; /* Violet header */
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        /* Home and Sort by Rating Section */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .home-button {
+            background-color: #800080; /* Violet button */
+            border-color: transparent;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 20px; /* Space between Home button and dropdown */
+        }
+
+        .home-button:hover {
+            background-color: #9b30b6; /* Slightly lighter violet on hover */
+        }
+
+        .home-button:focus {
+            outline: 2px solid #9b30b6;
+            outline-offset: 2px;
+        }
+
+        .sort-dropdown select {
+            padding: 8px;
+            font-size: 16px;
+            background-color: #555555;
+            color: white;
+            border-radius: 5px;
+            border: none;
+        }
+
+        /* Search Form Styling */
+        .search-form input {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .search-form button {
+            padding: 8px;
+            background-color: #800080;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Movie List */
+        a.movie {
+            display: block; /* Make the entire movie card clickable */
+            text-decoration: none; /* Remove underline from the link */
+            color: inherit; /* Inherit color from parent */
+        }
+
+        /* Movie Card Styling */
+        .movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .movie {
+            background-color: #333333;
+            border-radius: 10px;
+            margin: 10px;
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .movie:hover {
+            background-color: #444444;
+        }
+
+        .movie img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .movie h3 {
+            color: #800080;
+            margin: 10px 0;
+        }
+
+        .movie h3:hover {
+            color: #9b30b6;
+            text-decoration: underline;
+        }
+
+        .movie p {
+            color: #fff;
+            font-size: 14px;
+        }
+
+        /* Trailer Link Styling */
+        .trailer-link {
+            color: #800080;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .trailer-link:hover,
+        .trailer-link:focus {
+            text-decoration: underline;
+        }
+
+        /* Star Rating */
+        .star-rating {
+            color: #FFD700; /* Gold color for stars */
+            font-size: 13px; /* Adjust the size of the stars */
+        }
+
+        .star-rating i {
+            margin-right: 2px; /* Space between the stars */
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .movie-list {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .movie {
+                width: 90%;
+            }
+        }
+
+        footer { 
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .profile-button {
+            background-color: #800080; /* Violet button */
+            border-color: transparent;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;  /* Space between buttons */
+            }
+
+        .profile-button:hover {
+            background-color: #9b30b6; /* Slightly lighter violet on hover */
+        }
+
+        .profile-button:focus {
+            outline: 2px solid #9b30b6;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://i.pinimg.com/736x/a9/16/de/a916debd06e0c209af9bc6e34cf6af28.jpg" alt="Movie Logo" style="height: 80px; vertical-align: middle;">
+        <h1>MCU Movie Rating and Review</h1>
+        <div>
+            <!-- Profile Button -->
+            <a href="{{ url_for('profile') }}" class="profile-button">Profile</a>
+        </div>
+        <!-- Search Form -->
+        <form method="GET" action="{{ url_for('index') }}" class="search-form">
+            <input type="text" name="search_term" placeholder="Search for a movie..." value="{{ search_term }}" style="padding: 8px; font-size: 16px; border-radius: 5px; border: none;">
+            <button type="submit" style="padding: 8px; background-color: #800080; color: white; border-radius: 5px; border: none; cursor: pointer;">Search</button>
+        </form>
+        <div class="header-right">
+            <a href="/" class="home-button">Home</a>
+        <!-- Add Rating Filter Dropdown -->
+        <form method="GET" action="{{ url_for('index') }}" class="rating-filter">
+            <label for="min_rating" style="color: white; font-size: 16px; margin-right: 10px;">Filter:</label>
+            <select name="min_rating" id="min_rating" onchange="this.form.submit()">
+                <option value="" {% if not min_rating %}selected{% endif %}>All ratings</option>
+                <option value="1" {% if min_rating == '1' %}selected{% endif %}>1 Star & Up</option>
+                <option value="2" {% if min_rating == '2' %}selected{% endif %}>2 Stars & Up</option>
+                <option value="3" {% if min_rating == '3' %}selected{% endif %}>3 Stars & Up</option>
+                <option value="4" {% if min_rating == '4' %}selected{% endif %}>4 Stars & Up</option>
+                <option value="5" {% if min_rating == '5' %}selected{% endif %}>5 Stars Only</option>
+            </select>
+        </form>
+        
+        
+
+            <!-- Sort Dropdown -->
+            <form method="GET" action="{{ url_for('index') }}" class="sort-dropdown">
+                <label for="sort_order" style="color: white; font-size: 16px; margin-right: 10px;"></label>
+                <select name="sort_order" id="sort_order" onchange="this.form.submit()">
+                    <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>Low rated</option>
+                    <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>Top rated</option>
+                </select>
+            </form>
+            <!-- Logout Button -->
+            <a href="{{ url_for('logout') }}" class="logout-button">Log Out</a>
+        </div>
+    </header>
+    
+    {% if not movies %}
+    <p style="text-align: center; font-size: 18px; margin-top: 20px;">No movies found for the search term: "{{ search_term }}"</p>
+{% else %}
+    <div class="movie-list">
+        {% for movie in movies %}
+            <div class="movie">
+                <a href="{{ url_for('movie_details', movie_id=movie.id) }}">
+                    <img src="{{ movie.poster }}" alt="Movie Poster for {{ movie.title }}">
+                </a>
+                <a href="{{ url_for('movie_details', movie_id=movie.id) }}">
+                    <h3>{{ movie.title }}</h3>
+                </a>
+                <p>{{ movie.release_date if movie.release_date else 'Release date not available.' }}</p>
+                <p><strong>Average Rating:</strong> 
+                    {% if movie.avg_rating %}
+                        <span class="star-rating">
+                            {% for i in range(5) %}
+                                {% if i < movie.avg_rating %}
+                                    <i class="fas fa-star"></i> <!-- Filled star -->
+                                {% else %}
+                                    <i class="far fa-star"></i> <!-- Empty star -->
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    {% else %}
+                        No rating yet.
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+                    
+
+    <footer>
+        <p>&copy; This website is rightfully owned by Galo, Tan, and Mejio</p>
+    </footer>
+
+    <script>
+        // Function to close the toast
+        function closeToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

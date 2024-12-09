@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Login History</title>
+    <meta name="description" content="View Login History of Users">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/x-icon">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/png">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #800080;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .logout-button {
+            background-color: #800080;
+            border-color: transparent;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #9b30b6;
+        }
+
+        .logout-button:focus {
+            outline: 2px solid #9b30b6;
+            outline-offset: 2px;
+        }
+
+        .login-history-section {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+        }
+
+        .login-history-section h3 {
+            color: #800080;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #800080;
+            color: white;
+        }
+
+        td {
+            background-color: #444;
+        }
+
+        .btn-secondary {
+            background-color: #000000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #9b30b6;
+        }
+
+        .clear-button {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .clear-button:hover {
+            background-color: #c9302c;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            background-color: #2c2c2c;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+    </style>
+
+    <script>
+        // Confirmation dialog when trying to clear the login history
+        function confirmClearHistory(event) {
+            event.preventDefault();  // Prevent form submission immediately
+            const confirmed = confirm("Are you sure you want to clear all login history?");
+            if (confirmed) {
+                document.getElementById('clear-history-form').submit();  // Submit the form if confirmed
+            }
+        }
+    </script>
+</head>
+<body>
+
+<header>
+    <h1>View Login History</h1>
+    <a href="/logout" class="logout-button">Logout</a>
+</header>
+
+<a href="{{ url_for('admin_dashboard') }}" class="btn-secondary">Back to Dashboard</a>
+
+<div class="container">
+    <div class="login-history-section">
+        <h3>User Login History</h3>
+
+        <!-- Clear Login History Button with confirmation -->
+<form method="POST" id="clear-history-form">
+    <button type="submit" name="clear_history" class="btn-secondary" onclick="return confirmClearHistory();">
+        Clear Login History
+    </button>
+</form>
+
+<script>
+    function confirmClearHistory() {
+        return confirm("Are you sure you want to clear the entire login history?");
+    }
+</script>
+
+        {% if login_history %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in login_history %}
+                    <tr>
+                        <td>{{ record.user_id }}</td>
+                        <td>{{ record.username }}</td> <!-- Displaying the username -->
+                        <td>{{ record.login_time }}</td>
+                        <td>{{ record.logout_time if record.logout_time else "Still logged in" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No login history available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<footer>
+    <p>&copy; This website is rightfully owned by Galo, Tan, and Mejio</p>
+</footer>
+
+</body>
+</html>

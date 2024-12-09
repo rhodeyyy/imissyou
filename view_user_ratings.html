@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View User Ratings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #800080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .ratings-table {
+            width: 100%;
+            margin-top: 30px;
+            background-color: #333333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .ratings-table th, .ratings-table td {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .ratings-table th {
+            background-color: #800080;
+            color: white;
+        }
+
+        .ratings-table td {
+            background-color: #444444;
+        }
+
+        .ratings-table tr:nth-child(even) td {
+            background-color: #555555;
+        }
+
+        .ratings-table td:hover {
+            background-color: #666666;
+        }
+
+        .btn-secondary {
+            background-color: #000000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #9b30b6;
+        }
+
+        .empty-message {
+            color: #bbb;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        /* CSS for Star Ratings */
+        .star-rating {
+            font-size: 24px;
+            color: gold;
+        }
+
+        .star-rating .empty {
+            color: lightgray;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>View User Ratings</h1>
+</header>
+<a href="{{ url_for('admin_dashboard') }}" class="btn-secondary">Back to Dashboard</a>
+<div class="container">
+    <!-- Check if there are any ratings to display -->
+    {% if ratings %}
+        <!-- Ratings List -->
+        <table class="ratings-table">
+            <thead>
+                <tr>
+                    <th>Movie Title</th>
+                    <th>User</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rating in ratings %}
+                <tr>
+                    <td>{{ rating.title }}</td>
+                    <td>{{ rating.username }}</td>
+                    <td>
+                        <!-- Convert numeric rating to stars -->
+                        <div class="star-rating">
+                            {% for i in range(rating.rating) %}
+                                &#9733; <!-- Filled star -->
+                            {% endfor %}
+                            {% for i in range(5 - rating.rating) %}
+                                &#9734; <!-- Empty star -->
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="empty-message">No ratings available.</p>
+    {% endif %}
+
+    
+</div>
+
+</body>
+</html>

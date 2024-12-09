@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* General Layout and Background */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c; /* Dark background */
+            color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            height: 100vh; /* Full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('https://i.pinimg.com/474x/f0/3d/90/f03d909b55b9eb9a1aea5e0a5a6276a8.jpg'); /* Background Image */
+            background-size: cover; /* Make sure the background image covers the entire page */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat; /* Ensure the background doesn't repeat */
+        }
+
+        .container {
+            max-width: 400px; /* Limit the container width */
+            width: 100%; /* Ensure it takes up the full width of its max-width */
+            padding: 30px;
+            background-color: rgba(51, 51, 51, 0.8); /* Slightly transparent background to make text readable */
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #800080; /* Violet color */
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #444444;
+            color: white;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            background-color: #555555;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #800080; /* Violet button */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #9b30b6; /* Lighter violet on hover */
+        }
+
+        button:focus {
+            outline: 2px solid #9b30b6;
+            outline-offset: 2px;
+        }
+
+        p {
+            color: white;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #800080;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Input Fields Styling */
+        .text, .password {
+            background-color: rgba(255, 255, 255, 0);
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Flash Messages Styling */
+        .flash-messages {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .flash {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .flash.success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .flash.danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Password Strength Meter */
+        #password-strength-container {
+            display: none;
+            margin-top: 10px;
+        }
+
+        progress {
+            width: 100%;
+        }
+
+        small {
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            input, button {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/x-icon">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/png">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style.css">  <!-- Link to your styles -->
+</head>
+<body>
+    <div class="container">
+        <h2>Sign Up</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" id="signup-form">
+            <input class="text" type="text" name="username" id="username" placeholder="Username" required><br>
+            <small id="username-availability" style="color: red; display: none;">Username is already taken.</small><br>
+
+            <input class="password" type="password" name="password" id="password" placeholder="Password" required><br>
+
+            <!-- Password Strength Meter -->
+            <div id="password-strength-container">
+                <label for="password-strength">Password Strength:</label>
+                <progress id="password-strength" value="0" max="100"></progress>
+                <small id="password-strength-text"></small>
+            </div>
+
+            <input class="password" type="password" name="confirm_password" id="confirm-password" placeholder="Confirm Password" required><br>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById("password");
+        const passwordStrengthMeter = document.getElementById("password-strength");
+        const passwordStrengthText = document.getElementById("password-strength-text");
+        const passwordStrengthContainer = document.getElementById("password-strength-container");
+        const confirmPasswordInput = document.getElementById("confirm-password");
+        const usernameInput = document.getElementById("username");
+        const usernameAvailabilityText = document.getElementById("username-availability");
+
+        // Password Strength Meter Logic
+        passwordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            let strength = 0;
+
+            // Length check
+            if (password.length >= 8) strength += 20;
+            if (password.match(/[A-Z]/)) strength += 20; // Uppercase letter check
+            if (password.match(/[0-9]/)) strength += 20; // Number check
+            if (password.match(/[^A-Za-z0-9]/)) strength += 20; // Special char check
+            if (password.length >= 12) strength += 20; // Strong password length check
+
+            passwordStrengthMeter.style.display = "block";
+            passwordStrengthMeter.value = strength;
+            if (strength < 40) {
+                passwordStrengthText.textContent = "Weak";
+                passwordStrengthText.style.color = "red";
+            } else if (strength < 70) {
+                passwordStrengthText.textContent = "Moderate";
+                passwordStrengthText.style.color = "orange";
+            } else {
+                passwordStrengthText.textContent = "Strong";
+                passwordStrengthText.style.color = "green";
+            }
+
+            // Confirm password match check
+            if (confirmPasswordInput.value) {
+                if (confirmPasswordInput.value !== password) {
+                    confirmPasswordInput.setCustomValidity("Passwords do not match");
+                } else {
+                    confirmPasswordInput.setCustomValidity("");
+                }
+            }
+        });
+
+        // Username Availability Check
+        usernameInput.addEventListener('input', function() {
+            const username = usernameInput.value;
+
+            if (username.length > 0) {
+                fetch('/check-username?username=' + username)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.available) {
+                            usernameAvailabilityText.style.display = "none";
+                        } else {
+                            usernameAvailabilityText.style.display = "block";
+                        }
+                    });
+            }
+        });
+    </script>
+</body>
+</html>

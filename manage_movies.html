@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Movies</title>
+    <style>
+        /* General Layout */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #800080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        /* Flex container for top buttons */
+        .header-buttons {
+            position: absolute;
+            top: 80px; /* Adjust this value to move the buttons lower */
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* Align buttons to opposite sides */
+            padding: 0 20px;
+        }
+
+        .header-buttons a {
+            text-decoration: none;
+            color: white;
+            background-color: #800080;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .header-buttons a:hover {
+            background-color: #9b30b6;
+        }
+
+        /* Movie List */
+        .movie-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .movie {
+            background-color: #333333;
+            border-radius: 10px;
+            margin: 50px 10px; /* Increase the margin-top to move the card down */
+            padding: 20px;
+            width: 250px;   
+            text-align: center;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .movie:hover {
+            background-color: #444444;
+        }
+
+        .movie img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .movie h3 {
+            color: #800080;
+            margin: 10px 0;
+        }
+
+        .movie h3:hover {
+            color: #9b30b6;
+            text-decoration: underline;
+        }
+
+        .movie p {
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .movie-actions {
+            margin-top: 10px;
+        }
+
+        .movie-actions a,
+        .movie-actions form button {
+            margin: 5px 0;
+            text-decoration: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .movie-actions a {
+            background-color: #f39c12;
+        }
+
+        .movie-actions a:hover {
+            background-color: #e67e22;
+        }
+
+        .movie-actions form button {
+            background-color: #e74c3c;
+        }
+
+        .movie-actions form button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Home button */
+        .home-button {
+            background-color: #800080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .home-button:hover {
+            background-color: #9b30b6;
+        }
+
+        /* Back to Top button */
+        #backToTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #800080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+
+        #backToTop:hover {
+            background-color: #9b30b6;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-buttons">
+        <!-- Back to Dashboard Button on the Left -->
+        <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+        <!-- Add New Movie Button on the Right -->
+        <a href="{{ url_for('add_movie') }}">Add New Movie</a>
+    </div>
+    <h1>Manage Movies</h1>
+</header>
+
+<div class="movie-list">
+    {% for movie in movies %}
+        <div class="movie">
+            <img src="{{ movie.poster }}" alt="Poster for {{ movie.title }}">
+            <h3>{{ movie.title }}</h3>
+            <p>{{ movie.release_date }}</p>
+            <p>{{ movie.description }}</p>
+
+            <div class="movie-actions">
+                <a href="{{ url_for('edit_movie', movie_id=movie.id) }}">Edit</a>
+                <!-- Delete button with confirmation -->
+                <form action="{{ url_for('delete_movie', movie_id=movie.id) }}" method="POST" style="display:inline;" 
+                      onsubmit="return confirmDeletion('{{ movie.title }}');">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Back to Top Button -->
+<button id="backToTop" onclick="scrollToTop()">Back to Top</button>
+
+<script>
+    // JavaScript function to confirm deletion
+    function confirmDeletion(movieTitle) {
+        const confirmationMessage = "Are you sure you want to delete the movie \"" + movieTitle + "\" from your movies?";
+        return confirm(confirmationMessage);  // Displays the confirmation prompt
+    }
+
+    // Function to scroll to the top
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    // Show the Back to Top button when the user scrolls down
+    window.onscroll = function() {
+        let backToTopButton = document.getElementById("backToTop");
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            backToTopButton.style.display = "block"; // Show button
+        } else {
+            backToTopButton.style.display = "none"; // Hide button
+        }
+    };
+</script>
+
+</body>
+</html>

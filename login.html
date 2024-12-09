@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* General Layout and Background */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.pinimg.com/474x/f0/3d/90/f03d909b55b9eb9a1aea5e0a5a6276a8.jpg'); /* Background image */
+            background-size: cover; /* Ensures the image covers the entire viewport */
+            background-position: center; /* Center the image */
+            background-attachment: fixed; /* Keeps the background image fixed while scrolling */
+            background-repeat: no-repeat; /* Prevents repeating the image */
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Full height of the viewport */
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container Style */
+        .container {
+            max-width: 400px;
+            width: 100%; /* Ensures full width up to max-width */
+            padding: 30px;
+            background-color: rgba(51, 51, 51, 0.8); /* Semi-transparent background */
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #444444;
+            color: white;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            background-color: #555555;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #800080; /* Violet button */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #9b30b6; /* Lighter violet on hover */
+        }
+
+        button:focus {
+            outline: 2px solid #9b30b6;
+            outline-offset: 2px;
+        }
+
+        p {
+            color: white;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #800080;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            input, button {
+                font-size: 14px;
+            }
+            .flash-messages {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .flash {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .flash.success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .flash.danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/x-icon">
+    <link rel="icon" href="https://i.pinimg.com/736x/04/52/cf/0452cf0a971fe98f9323d9c71ba0a15b.jpg" type="image/png">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your styles -->
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+    
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    
+        <form method="POST">
+            <input class="text" type="text" name="username" placeholder="Username" required><br>
+            <input class="password" type="password" name="password" placeholder="Password" required><br>
+    
+            <button type="submit">Login</button>
+        </form>
+    
+        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+    </div>
+</body>
+</html>
